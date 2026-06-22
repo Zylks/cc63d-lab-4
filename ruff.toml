@@ -1,0 +1,15 @@
+# Configuración de ruff (linter + formateador de Python).
+# Reglas conservadoras para no pelear con el estilo del código del curso.
+
+line-length = 100
+
+[lint]
+# E/W: estilo pycodestyle · F: pyflakes (errores reales) · I: orden de imports
+select = ["E", "W", "F", "I"]
+ignore = [
+    "E501",  # líneas largas: las controla el formateador, no bloquean el lint
+]
+
+[lint.per-file-ignores]
+# Los tests usan fixtures de pytest que parecen "imports sin usar".
+"tests/*" = ["F811", "F401"]

@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+data/
+*.db
+.git
+.github/
+tests/
+.pytest_cache/
+.ruff_cache/
+requirements-dev.txt
+pytest.ini
+ruff.toml
+README.md

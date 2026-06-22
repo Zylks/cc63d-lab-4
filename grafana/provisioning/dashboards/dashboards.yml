@@ -1,0 +1,13 @@
+# Carga automática de dashboards desde archivos JSON al arrancar Grafana.
+# Los JSON se montan (via compose) en /var/lib/grafana/dashboards.
+apiVersion: 1
+
+providers:
+  - name: "SRE"
+    orgId: 1
+    folder: ""
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /var/lib/grafana/dashboards

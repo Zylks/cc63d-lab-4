@@ -1,0 +1,15 @@
+# Configuración de Prometheus para el laboratorio de SRE (monolito).
+#
+# Modelo PULL: Prometheus consulta ("hace scrape") el endpoint /metrics del
+# monolito cada `scrape_interval`. La app no envía nada: solo expone y espera.
+
+global:
+  scrape_interval: 5s        # cada cuánto consultamos /metrics (ágil para el lab)
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: "incident-monolith"
+    metrics_path: /metrics
+    static_configs:
+      # "app" es el nombre del servicio en la red de compose; 8000 su puerto.
+      - targets: ["app:8000"]

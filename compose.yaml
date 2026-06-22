@@ -1,0 +1,52 @@
+# ============================================================================
+#  Lab 3 (Clase 4) — Observabilidad sobre el MONOLITO
+# ============================================================================
+#
+#  Instrumentamos la app monolítica (Flask + SQLite, un solo proceso) y le
+#  sumamos el stack de observabilidad. Solo 3 contenedores:
+#
+#      app         -> el monolito instrumentado, expone /metrics
+#      prometheus  -> hace scrape de /metrics (modelo pull)
+#      grafana     -> grafica los SLIs (dashboard ya provisionado)
+#
+#      docker compose up --build
+#
+#  URLs:
+#      http://localhost:8000   la app (frontend + API en un proceso)
+#      http://localhost:9090   Prometheus
+#      http://localhost:3001   Grafana (admin / admin)
+# ============================================================================
+
+services:
+  app:
+    build: .
+    ports: ["8000:8000"]
+    environment:
+      # Fracción de requests a /work que fallan a propósito (para el lab).
+      FLAKY_ERROR_RATE: "0.05"
+    volumes:
+      - appdata:/app/data        # persistencia del SQLite
+
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    ports: ["9090:9090"]
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+      - app
+
+  grafana:
+    image: grafana/grafana:11.2.0
+    ports: ["3001:3000"]
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus
+
+volumes:
+  appdata:

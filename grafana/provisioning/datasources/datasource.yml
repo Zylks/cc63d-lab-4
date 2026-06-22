@@ -1,0 +1,12 @@
+# Grafana descubre Prometheus automáticamente al arrancar (provisioning).
+# Sin esto, habría que agregar la fuente de datos a mano por la UI.
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    uid: prometheus                 # uid estable: el dashboard lo referencia por aquí
+    access: proxy
+    url: http://prometheus:9090     # el servicio "prometheus" en la red de compose
+    isDefault: true
+    editable: true
